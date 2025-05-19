@@ -10,6 +10,34 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: e_commerce
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    env:
+      MYSQL_HOST: localhost
+      MYSQL_PORT: 3306
+      MYSQL_DB: e_commerce
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      JWT_SECRET: testsecretkey
+      JWT_EXPIRATION: 864000
+      MAIL_USERNAME: your-email@gmail.com
+      MAIL_PASSWORD: your-password
+      MAIL_HOST: smtp.gmail.com
+      MAIL_PORT: 587
+      SERVER_PORT: 8080
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -26,7 +54,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      # 🔄 Login to DockerHub TRƯỚC khi push
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
