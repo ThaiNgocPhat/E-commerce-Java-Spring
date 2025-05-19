@@ -26,6 +26,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      # 🔄 Login to DockerHub TRƯỚC khi push
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
@@ -33,7 +34,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/ecommerce-app:latest .
+        run: docker build -t ecommerce-app .
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/ecommerce-app:latest
+        run: |
+          docker tag ecommerce-app ${{ secrets.DOCKER_USERNAME }}/ecommerce-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecommerce-app:latest
