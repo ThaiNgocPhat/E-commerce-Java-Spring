@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: e_commerce
+    restart: always
+    environment:
+      MYSQL_DATABASE: e_commerce
+      MYSQL_USER: root
+      MYSQL_PASSWORD: mapyeugau110418
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce-app
+    depends_on:
+      - mysql
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/e_commerce?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: mapyeugau110418
+    networks:
+      - backend
+
+volumes:
+  db_data:
+
+networks:
+  backend:
